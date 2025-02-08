@@ -73,7 +73,7 @@ const useGameState = () => {
               newLetterStates[letter] = 'present';
             }
           } else {
-            if (!newLetterStates[letter]) {
+            if (!targetWord.includes(letter) && !newLetterStates[letter]) {
               newLetterStates[letter] = 'absent';
             }
           }
