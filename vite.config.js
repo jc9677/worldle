@@ -4,4 +4,5 @@ import tailwindcss from 'tailwindcss';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: '/worldle/',  // Add this line for GitHub Pages
 });
