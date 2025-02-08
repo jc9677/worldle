@@ -10,6 +10,8 @@ This is a Wordle clone built with React and Vite. The game allows users to guess
 worldle/
 ├── public/
 │   └── index.html
+├── scripts/
+│   └── generate_word_list.py
 ├── src/
 │   ├── components/
 │   │   ├── Board.jsx
@@ -39,6 +41,7 @@ worldle/
 
 - Node.js (v14 or higher)
 - npm (v6 or higher)
+- Python 3.6+ (for word list generation)
 
 ### Installation
 
@@ -54,6 +57,26 @@ cd worldle
 ```sh
 npm install
 ```
+
+### Generating the Word List
+
+The game uses a curated list of 5-letter English words. To generate/update this list:
+
+1. Install Python requirements:
+```sh
+pip install -r requirements.txt
+```
+
+2. Run the word list generator:
+```sh
+python scripts/generate_word_list.py
+```
+
+This will create/update `src/constants/words.js` with filtered 5-letter words that:
+- Contain only letters (no numbers or special characters)
+- Are not proper nouns
+- Are not plurals
+- Are common English words
 
 ### Running the App
 
