@@ -1,6 +1,11 @@
 import React from 'react';
 
 const GameOver = ({ won, targetWord, handleShare, stats }) => {
+  const handlePlayAgain = () => {
+    localStorage.removeItem('wordleState');
+    window.location.reload();
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-gray-800 p-6 rounded-lg shadow-xl max-w-sm w-full">
@@ -24,7 +29,7 @@ const GameOver = ({ won, targetWord, handleShare, stats }) => {
           </button>
           
           <button
-            onClick={() => window.location.reload()}
+            onClick={handlePlayAgain}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Play Again
