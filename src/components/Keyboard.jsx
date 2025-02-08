@@ -12,6 +12,12 @@ const Keyboard = ({ handleInput, letterStates }) => {
     return `${baseClass} ${widthClass} ${colorClass}`;
   };
 
+  const handleTouch = (e, key) => {
+    e.preventDefault();  // Prevent default touch behavior
+    e.stopPropagation(); // Stop event from bubbling
+    handleInput(key);
+  };
+
   return (
     <div className="flex flex-col gap-2 p-2 max-w-screen-sm mx-auto">
       {KEYBOARD_LAYOUT.map((row, i) => (
@@ -20,10 +26,12 @@ const Keyboard = ({ handleInput, letterStates }) => {
             <button
               key={key}
               className={getKeyClass(key)}
-              onClick={() => handleInput(key)}
-              onTouchStart={(e) => {
-                e.preventDefault(); // Prevent double-firing on some devices
-                handleInput(key);
+              onTouchStart={(e) => handleTouch(e, key)}
+              onClick={(e) => {
+                // Only handle click if it's not a touch event
+                if (!e.target.matches(':active')) {
+                  handleInput(key);
+                }
               }}
             >
               {key === 'BACKSPACE' ? '←' : key}
