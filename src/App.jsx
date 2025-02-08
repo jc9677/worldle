@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Board from './components/Board';
 import Keyboard from './components/Keyboard';
 import GameOver from './components/GameOver';
 import Stats from './components/Stats';
 import useGameState from './hooks/useGameState';
 import useStats from './hooks/useStats';
-import { handleShare, handleInput } from './utils/gameLogic';
+import { handleShare } from './utils/gameLogic';
 
 function App() {
-  const { state, setState } = useGameState();
+  const { state, setState, handleInput } = useGameState();
   const { stats, updateStats } = useStats();
-
-  const onKeyPress = (key) => {
-    handleInput(key, state, setState, stats, updateStats);
-  };
 
   const getTileClass = (row, col) => {
     if (row >= state.currentRow) return '';
@@ -35,7 +31,7 @@ function App() {
         />
 
         <Keyboard 
-          handleInput={onKeyPress} 
+          handleInput={handleInput} 
           letterStates={state.letterStates} 
         />
 
