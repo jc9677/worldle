@@ -3,14 +3,19 @@ import { KEYBOARD_LAYOUT } from '../constants/keyboardLayout';
 
 const Keyboard = ({ handleInput, letterStates }) => {
   const getKeyClass = (key) => {
-    const baseClass = key.length > 1 ? 'key wide' : 'key';
-    return `${baseClass} ${letterStates[key] || ''}`;
+    const baseClass = "px-2 py-4 rounded font-bold text-white";
+    const widthClass = key.length > 1 ? "min-w-[65px]" : "min-w-[35px]";
+    const colorClass = letterStates[key] ? 
+      `bg-${letterStates[key]}` : 
+      "bg-gray-500";
+    
+    return `${baseClass} ${widthClass} ${colorClass}`;
   };
 
   return (
-    <div className="keyboard">
+    <div className="flex flex-col gap-2 p-2 max-w-screen-sm mx-auto">
       {KEYBOARD_LAYOUT.map((row, i) => (
-        <div key={i} className="keyboard-row">
+        <div key={i} className="flex justify-center gap-1.5">
           {row.map(key => (
             <button
               key={key}
