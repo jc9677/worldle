@@ -41,6 +41,7 @@ function App() {
             targetWord={state.targetWord}
             handleShare={() => handleShare(state)}
             stats={stats}
+            currentRow={state.currentRow}
           />
         )}
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const GameOver = ({ won, targetWord, handleShare, stats }) => {
+const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
   const handlePlayAgain = () => {
     // Only clear the game state, keep the stats
     localStorage.removeItem('wordleState');
@@ -17,7 +17,7 @@ const GameOver = ({ won, targetWord, handleShare, stats }) => {
         <div className="text-center mb-6">
           <p className="mb-2">
             {won 
-              ? `You found the word in ${stats.currentStreak} guesses!` 
+              ? `You found the word in ${currentRow} guesses!` 
               : `The word was: ${targetWord}`
             }
           </p>
