@@ -26,10 +26,10 @@ const Keyboard = ({ handleInput, letterStates }) => {
             <button
               key={key}
               className={getKeyClass(key)}
-              onTouchStart={(e) => handleTouch(e, key)}
+              onTouchEnd={(e) => handleTouch(e, key)}
               onClick={(e) => {
                 // Only handle click if it's not a touch event
-                if (!e.target.matches(':active')) {
+                if (e.type !== 'touchend') {
                   handleInput(key);
                 }
               }}
