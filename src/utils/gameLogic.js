@@ -4,7 +4,7 @@ import { SOLUTION_WORDS } from '../constants/solution_words';
 async function loadValidGuesses() {
   try {
     console.log('Loading valid guesses...');
-    const response = await fetch('/valid_guesses.txt');
+    const response = await fetch('/worldle/valid_guesses.txt');
     const text = await response.text();
     console.log('Raw file content:', text);
     const words = text.split('\n').map(word => word.trim()).filter(word => word);
