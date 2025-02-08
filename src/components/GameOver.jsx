@@ -2,6 +2,7 @@ import React from 'react';
 
 const GameOver = ({ won, targetWord, handleShare, stats }) => {
   const handlePlayAgain = () => {
+    // Only clear the game state, keep the stats
     localStorage.removeItem('wordleState');
     window.location.reload();
   };
@@ -13,12 +14,21 @@ const GameOver = ({ won, targetWord, handleShare, stats }) => {
           {won ? 'Congratulations!' : 'Game Over'}
         </h2>
         
-        <p className="text-center mb-4">
-          {won 
-            ? `You found today's word in ${stats.currentStreak} guesses!` 
-            : `The word was: ${targetWord}`
-          }
-        </p>
+        <div className="text-center mb-6">
+          <p className="mb-2">
+            {won 
+              ? `You found the word in ${stats.currentStreak} guesses!` 
+              : `The word was: ${targetWord}`
+            }
+          </p>
+          <p className="text-sm text-gray-400">
+            Games Won: {stats.gamesWon} / {stats.gamesPlayed}
+            <br />
+            Current Streak: {stats.currentStreak}
+            <br />
+            Max Streak: {stats.maxStreak}
+          </p>
+        </div>
 
         <div className="flex justify-center space-x-4">
           <button
