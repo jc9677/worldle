@@ -2,34 +2,33 @@ import React from 'react';
 
 const GameOver = ({ won, targetWord, handleShare, stats }) => {
   return (
-    <div className="mt-8 text-center">
-      <p className="text-xl mb-4">
-        {won ? 'Congratulations!' : `The word was: ${targetWord}`}
-      </p>
-      <button
-        className="bg-green-600 text-white px-6 py-2 rounded-lg mb-6"
-        onClick={handleShare}
-      >
-        Share Results
-      </button>
-      <div className="stats">
-        <div className="stat-item">
-          <div className="stat-value">{stats.gamesPlayed}</div>
-          <div className="stat-label">Played</div>
-        </div>
-        <div className="stat-item">
-          <div className="stat-value">
-            {Math.round((stats.gamesWon / stats.gamesPlayed) * 100) || 0}%
-          </div>
-          <div className="stat-label">Win Rate</div>
-        </div>
-        <div className="stat-item">
-          <div className="stat-value">{stats.currentStreak}</div>
-          <div className="stat-label">Current Streak</div>
-        </div>
-        <div className="stat-item">
-          <div className="stat-value">{stats.maxStreak}</div>
-          <div className="stat-label">Max Streak</div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-gray-800 p-6 rounded-lg shadow-xl max-w-sm w-full">
+        <h2 className="text-2xl font-bold text-center mb-4">
+          {won ? 'Congratulations!' : 'Game Over'}
+        </h2>
+        
+        <p className="text-center mb-4">
+          {won 
+            ? `You found today's word in ${stats.currentStreak} guesses!` 
+            : `The word was: ${targetWord}`
+          }
+        </p>
+
+        <div className="flex justify-center space-x-4">
+          <button
+            onClick={handleShare}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Share Results
+          </button>
+          
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Play Again
+          </button>
         </div>
       </div>
     </div>
