@@ -5,7 +5,7 @@ import GameOver from './components/GameOver';
 import Stats from './components/Stats';
 import useGameState from './hooks/useGameState';
 import useStats from './hooks/useStats';
-import { handleShare } from './utils/gameLogic';
+import { handleShare, handleInput } from './utils/gameLogic';
 
 function App() {
   const { state, setState } = useGameState();
