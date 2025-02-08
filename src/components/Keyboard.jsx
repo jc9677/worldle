@@ -21,6 +21,10 @@ const Keyboard = ({ handleInput, letterStates }) => {
               key={key}
               className={getKeyClass(key)}
               onClick={() => handleInput(key)}
+              onTouchStart={(e) => {
+                e.preventDefault(); // Prevent double-firing on some devices
+                handleInput(key);
+              }}
             >
               {key === 'BACKSPACE' ? '←' : key}
             </button>
