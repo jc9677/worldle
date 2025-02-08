@@ -4,9 +4,10 @@ import { SOLUTION_WORDS } from '../constants/solution_words';
 async function loadValidGuesses() {
   try {
     console.log('Loading valid guesses...');
-    const response = await window.fs.readFile('src/constants/valid_guesses.txt', { encoding: 'utf8' });
-    console.log('Raw file content:', response);
-    const words = response.split('\n').map(word => word.trim()).filter(word => word);
+    const response = await fetch('/valid_guesses.txt');
+    const text = await response.text();
+    console.log('Raw file content:', text);
+    const words = text.split('\n').map(word => word.trim()).filter(word => word);
     console.log('Processed words:', words);
     return words;
   } catch (error) {
