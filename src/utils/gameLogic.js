@@ -3,8 +3,12 @@ import { SOLUTION_WORDS } from '../constants/solution_words';
 // Load valid guesses from file
 async function loadValidGuesses() {
   try {
+    console.log('Loading valid guesses...');
     const response = await window.fs.readFile('src/constants/valid_guesses.txt', { encoding: 'utf8' });
-    return response.split('\n').map(word => word.trim()).filter(word => word);
+    console.log('Raw file content:', response);
+    const words = response.split('\n').map(word => word.trim()).filter(word => word);
+    console.log('Processed words:', words);
+    return words;
   } catch (error) {
     console.error('Error loading valid guesses:', error);
     return [];
@@ -21,13 +25,16 @@ export const getTodaysWord = () => {
 let validGuessesCache = null;
 
 export const isValidGuess = async (guess) => {
+  console.log('Checking if valid guess:', guess);
   // First time loading valid guesses
   if (!validGuessesCache) {
     validGuessesCache = await loadValidGuesses();
   }
+  console.log('Valid guesses cache:', validGuessesCache);
   
-  // Check if word is in either list
-  return SOLUTION_WORDS.includes(guess) || validGuessesCache.includes(guess);
+  const isValid = SOLUTION_WORDS.includes(guess) || validGuessesCache.includes(guess);
+  console.log('Is valid?', isValid);
+  return isValid;
 };
 
 export const handleShare = (state) => {
