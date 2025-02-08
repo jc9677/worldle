@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { WORDS } from '../constants/words';
-import { getTodaysWord } from '../utils/gameLogic';
+import { getTodaysWord, isValidGuess } from '../utils/gameLogic';
 
 const useGameState = () => {
   const [state, setState] = useState(() => {
@@ -49,13 +48,15 @@ const useGameState = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [state]);
 
-  const handleInput = (key) => {
+  const handleInput = async (key) => {
     if (state.gameOver) return;
 
     if (key === 'ENTER') {
       if (state.currentCol === 5) {
         const guess = state.board[state.currentRow].join('');
-        if (!WORDS.includes(guess)) {
+        const isValid = await isValidGuess(guess);
+        
+        if (!isValid) {
           alert('Not in word list!');
           return;
         }
