@@ -1,3 +1,8 @@
 .DS_Store
 /.venv
 /node_modules
+public/five_letter_words.csv
+public/non_plural_s_words.csv
+public/s-words.csv
+public/words_alpha.txt
+public/words_dictionary.json

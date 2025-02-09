@@ -2,7 +2,7 @@ import React from 'react';
 
 const Board = ({ board, getTileClass }) => {
   return (
-    <div className="grid grid-rows-6 gap-2 mb-8 mx-auto">
+    <div className="grid grid-rows-6 gap-2 mb-14 mx-auto">
       {board.map((row, i) => (
         <div key={i} className="flex justify-center gap-2">
           {row.map((letter, j) => (

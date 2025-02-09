@@ -4,11 +4,13 @@ import { SOLUTION_WORDS } from '../constants/solution_words';
 async function loadValidGuesses() {
   try {
     console.log('Loading valid guesses...');
-    const response = await fetch('/worldle/valid_guesses.txt');
+    const response = await fetch('/worldle/5-letter-words.csv');
     const text = await response.text();
-    console.log('Raw file content:', text);
-    const words = text.split('\n').map(word => word.trim()).filter(word => word);
-    console.log('Processed words:', words);
+    // Split by newlines and filter out empty strings
+    const words = text.split('\n')
+      .map(word => word.trim().toUpperCase())
+      .filter(word => word.length > 0);
+    console.log('Loaded words:', words.length);
     return words;
   } catch (error) {
     console.error('Error loading valid guesses:', error);
@@ -17,9 +19,18 @@ async function loadValidGuesses() {
 }
 
 export const getTodaysWord = () => {
+  // Get SOLUTION_WORDS.length
+  console.log('Number of solution words:', SOLUTION_WORDS.length);
   const today = new Date();
   const index = (today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate()) % SOLUTION_WORDS.length;
-  return SOLUTION_WORDS[index];
+  // Get the word for today and convert to uppercase
+  console.log('Today\'s index:', index);
+  const word = SOLUTION_WORDS[index];
+  console.log('Today\'s word:', word);
+  // Convert to uppercase
+  const uppercaseWord = word.toUpperCase();
+
+  return uppercaseWord;
 };
 
 // Cache for valid guesses

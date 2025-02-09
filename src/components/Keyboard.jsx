@@ -19,9 +19,9 @@ const Keyboard = ({ handleInput, letterStates }) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 px-2 w-full">
+    <div className="flex flex-col gap-2 px-0 w-full">
       {KEYBOARD_LAYOUT.map((row, i) => (
-        <div key={i} className="flex justify-center gap-1.5">
+        <div key={i} className="flex justify-center gap-2">
           {row.map(key => (
             <button
               key={key}
@@ -34,7 +34,7 @@ const Keyboard = ({ handleInput, letterStates }) => {
                 }
               }}
             >
-              {key === 'BACKSPACE' ? '←' : key}
+              {key === 'BACKSPACE' ? 'DEL' : key}
             </button>
           ))}
         </div>
