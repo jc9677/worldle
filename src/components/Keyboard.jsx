@@ -4,7 +4,7 @@ import { KEYBOARD_LAYOUT } from '../constants/keyboardLayout';
 const Keyboard = ({ handleInput, letterStates }) => {
   const getKeyClass = (key) => {
     const baseClass = "py-4 rounded font-bold text-white";
-    const widthClass = key.length > 1 ? "w-16" : "w-8"; // w-16 = 4rem (64px), w-8 = 2rem (32px)
+    const widthClass = key.length > 1 ? "w-16" : "w-9"; // w-16 = 4rem (64px), w-8 = 2rem (32px)
     const colorClass = letterStates[key] ? 
       letterStates[key] : 
       "bg-gray-500";
