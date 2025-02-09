@@ -4,7 +4,7 @@ import { KEYBOARD_LAYOUT } from '../constants/keyboardLayout';
 const Keyboard = ({ handleInput, letterStates }) => {
   const getKeyClass = (key) => {
     const baseClass = "py-4 rounded font-bold text-white";
-    const widthClass = key.length > 1 ? "w-16" : "w-9"; // w-16 = 4rem (64px), w-8 = 2rem (32px)
+    const widthClass = key.length > 1 ? "w-16" : "w-8";
     const colorClass = letterStates[key] ? 
       letterStates[key] : 
       "bg-gray-500";
@@ -19,7 +19,7 @@ const Keyboard = ({ handleInput, letterStates }) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 p-2 max-w-screen-sm mx-auto">
+    <div className="flex flex-col gap-2 px-2 w-full">
       {KEYBOARD_LAYOUT.map((row, i) => (
         <div key={i} className="flex justify-center gap-1.5">
           {row.map(key => (
