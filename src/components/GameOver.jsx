@@ -29,7 +29,7 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
         onClick={() => setIsVisible(false)} 
       />
       
-      <div className="relative bg-gray-800 p-6 rounded-lg shadow-xl max-w-sm w-full">
+      <div className="relative bg-gray-800 p-6 rounded-lg shadow-xl max-w-sm w-full border border-yellow-500 mx-auto" style={{ position: 'fixed', top: '35%', left: '50%', transform: 'translate(-50%, -50%)' }}>
         <button
           onClick={() => setIsVisible(false)}
           className="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-700 transition-colors"

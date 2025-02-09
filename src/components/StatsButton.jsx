@@ -26,11 +26,17 @@ const StatsButton = ({ stats }) => {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setIsOpen(false)} />
-          
-          <div className="relative min-h-screen flex items-center justify-center p-4">
-            <div className="relative bg-gray-800 text-white rounded-lg p-6 max-w-md w-full shadow-xl">
+        <>
+          <div 
+            className="fixed inset-0 bg-black/50 z-40" 
+            onClick={() => setIsOpen(false)} 
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsOpen(false);
+            }
+          }}>
+            <div className="relative bg-gray-800 text-white rounded-lg p-6 max-w-sm w-full shadow-xl border border-yellow-500" style={{ position: 'fixed', top: '35%', left: '50%', transform: 'translate(-50%, -50%)' }}>
               {/* Close button */}
               <button
                 onClick={() => setIsOpen(false)}
@@ -64,7 +70,7 @@ const StatsButton = ({ stats }) => {
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Board from './components/Board';
 import Keyboard from './components/Keyboard';
 import GameOver from './components/GameOver';
@@ -10,6 +10,12 @@ import { handleShare } from './utils/gameLogic';
 function App() {
   const { state, setState, handleInput } = useGameState();
   const { stats, updateStats } = useStats();
+
+  useEffect(() => {
+    if (state.gameOver) {
+      updateStats(state.won);
+    }
+  }, [state.gameOver, state.won]);
 
   const getTileClass = (row, col) => {
     if (row >= state.currentRow) return '';
