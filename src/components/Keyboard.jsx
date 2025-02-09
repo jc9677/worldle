@@ -6,7 +6,7 @@ const Keyboard = ({ handleInput, letterStates }) => {
     const baseClass = "px-2 py-4 rounded font-bold text-white";
     const widthClass = key.length > 1 ? "min-w-[65px]" : "min-w-[35px]";
     const colorClass = letterStates[key] ? 
-      `bg-${letterStates[key]}` : 
+      letterStates[key] : 
       "bg-gray-500";
     
     return `${baseClass} ${widthClass} ${colorClass}`;

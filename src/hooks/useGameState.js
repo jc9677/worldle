@@ -67,14 +67,14 @@ const useGameState = () => {
         for (let i = 0; i < 5; i++) {
           const letter = guess[i];
           if (letter === targetWord[i]) {
-            newLetterStates[letter] = 'correct';
+            newLetterStates[letter] = 'bg-green-600';
           } else if (targetWord.includes(letter)) {
-            if (newLetterStates[letter] !== 'correct') {
-              newLetterStates[letter] = 'present';
+            if (newLetterStates[letter] !== 'bg-green-600') {
+              newLetterStates[letter] = 'bg-yellow-600';
             }
           } else {
             if (!targetWord.includes(letter) && !newLetterStates[letter]) {
-              newLetterStates[letter] = 'absent';
+              newLetterStates[letter] = 'bg-gray-700';
             }
           }
         }
