@@ -12,10 +12,36 @@ const Keyboard = ({ handleInput, letterStates }) => {
     return `${baseClass} ${widthClass} ${colorClass}`;
   };
 
-  const handleTouch = (e, key) => {
-    e.preventDefault();  // Prevent default touch behavior
-    e.stopPropagation(); // Stop event from bubbling
-    handleInput(key);
+  // Create refs to track touch state
+  const touchStartTarget = React.useRef(null);
+  const shouldTrigger = React.useRef(true);
+
+  const handleTouchStart = (e, key) => {
+    e.preventDefault();
+    touchStartTarget.current = e.target;
+    shouldTrigger.current = true;
+  };
+
+  const handleTouchMove = (e) => {
+    if (!touchStartTarget.current) return;
+    
+    // Get the element under the current touch position
+    const touch = e.touches[0];
+    const currentElement = document.elementFromPoint(touch.clientX, touch.clientY);
+    
+    // If we've moved outside the original button, cancel the input
+    if (currentElement !== touchStartTarget.current) {
+      shouldTrigger.current = false;
+    }
+  };
+
+  const handleTouchEnd = (e, key) => {
+    e.preventDefault();
+    if (shouldTrigger.current && touchStartTarget.current) {
+      handleInput(key);
+    }
+    touchStartTarget.current = null;
+    shouldTrigger.current = true;
   };
 
   return (
@@ -26,10 +52,12 @@ const Keyboard = ({ handleInput, letterStates }) => {
             <button
               key={key}
               className={getKeyClass(key)}
-              onTouchEnd={(e) => handleTouch(e, key)}
+              onTouchStart={(e) => handleTouchStart(e, key)}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={(e) => handleTouchEnd(e, key)}
               onClick={(e) => {
                 // Only handle click if it's not a touch event
-                if (e.type !== 'touchend') {
+                if (e.nativeEvent.pointerType !== 'touch') {
                   handleInput(key);
                 }
               }}
