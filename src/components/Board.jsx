@@ -9,7 +9,7 @@ const Board = ({ board, getTileClass }) => {
             <div 
               key={j} 
               className={`
-                w-[52px] sm:w-14 h-[52px] sm:h-14 border-2 border-gray-600 
+                w-[60px] sm:w-[62px] h-[60px] sm:h-[62px] border-2 border-gray-600 
                 flex items-center justify-center
                 text-2xl font-bold uppercase
                 ${getTileClass(i, j)}
