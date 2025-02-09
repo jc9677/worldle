@@ -45,7 +45,7 @@ function App() {
           />
         )}
 
-        <Stats stats={stats} />
+        {/* <Stats stats={stats} /> */}
       </div>
     </div>
   );
