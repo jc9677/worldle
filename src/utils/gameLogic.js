@@ -42,14 +42,14 @@ export const isValidGuess = async (guess) => {
   if (!validGuessesCache) {
     validGuessesCache = await loadValidGuesses();
   }
-  console.log('Valid guesses cache:', validGuessesCache);
+  //console.log('Valid guesses cache:', validGuessesCache);
   
   const isValid = SOLUTION_WORDS.includes(guess) || validGuessesCache.includes(guess);
   console.log('Is valid?', isValid);
   return isValid;
 };
 
-export const handleShare = (state) => {
+export const handleShare = (state, customClipboard = navigator.clipboard) => {
   if (!state.gameOver) return;
 
   let result = `Wordle Clone ${state.won ? state.currentRow : 'X'}/6\n\n`;
@@ -68,7 +68,5 @@ export const handleShare = (state) => {
     result += '\n';
   }
 
-  navigator.clipboard.writeText(result)
-    .then(() => alert('Results copied to clipboard!'))
-    .catch(() => alert('Failed to copy results'));
+  return customClipboard.writeText(result);
 };

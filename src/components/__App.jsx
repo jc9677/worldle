@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import Board from './components/Board';
-import Keyboard from './components/Keyboard';
-import GameOver from './components/GameOver';
-import StatsButton from './components/StatsButton';
-import FormSettings from './components/FormSettings';
-import PlayerResults from './components/PlayerResults';
-import DebugLog from './components/DebugLog';
-import useGameState from './hooks/useGameState';
-import useStats from './hooks/useStats';
-import { handleShare } from './utils/gameLogic';
+import Board from './Board';
+import Keyboard from './Keyboard';
+import GameOver from './GameOver';
+import StatsButton from './StatsButton';
+import FormSettings from './FormSettings';
+import PlayerResults from './PlayerResults';
+import useGameState from '../hooks/useGameState';
+import useStats from '../hooks/useStats';
 import { Settings } from 'lucide-react';
 
 function App() {
@@ -62,9 +60,9 @@ function App() {
           <GameOver
             won={state.won}
             targetWord={state.targetWord}
-            handleShare={async (clipboard) => handleShare(state, clipboard)}
             stats={stats}
             currentRow={state.currentRow}
+            board={state.board}
           />
         )}
 
@@ -72,8 +70,6 @@ function App() {
           isOpen={showSettings}
           onClose={() => setShowSettings(false)}
         />
-
-        <DebugLog />
       </div>
     </div>
   );

@@ -3,39 +3,36 @@ import { X } from 'lucide-react';
 import { submitToForm } from '../utils/formSubmission';
 
 const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
-  // State to store the share text
   const [shareText, setShareText] = useState('');
-
-  // Function to get share text without copying to clipboard
-  const getShareText = () => {
-    // Create a mock clipboard function
-    const mockClipboard = (text) => {
-      setShareText(text);
-      return Promise.resolve();
-    };
-
-    // If navigator.clipboard is available, temporarily replace it
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      const originalClipboard = navigator.clipboard.writeText;
-      navigator.clipboard.writeText = mockClipboard;
-      handleShare();
-      navigator.clipboard.writeText = originalClipboard;
-    } else {
-      // If clipboard API is not available, just call handleShare with mock
-      const originalClipboard = window.navigator.clipboard;
-      window.navigator.clipboard = { writeText: mockClipboard };
-      handleShare();
-      window.navigator.clipboard = originalClipboard;
-    }
-
-    return shareText;
-  };
   const [isVisible, setIsVisible] = useState(true);
   const [submitStatus, setSubmitStatus] = useState('');
+  const [hasGenerated, setHasGenerated] = useState(false);
 
-  // Get share text and submit to form when component mounts
+  // Function to directly get share text without using clipboard
+  const generateShareText = async () => {
+    if (hasGenerated) return; // Prevent multiple generations
+    
+    try {
+      // Call handleShare with a mock function that captures the text
+      const mockWriteText = (text) => {
+        setShareText(text);
+        return Promise.resolve();
+      };
+      
+      const mockClipboard = { writeText: mockWriteText };
+      await handleShare(mockClipboard);
+      setHasGenerated(true);
+    } catch (error) {
+      console.error('Error generating share text:', error);
+      // Set a default share text in case of error
+      setShareText(`${won ? `Won in ${currentRow}` : 'Lost'}`);
+      setHasGenerated(true);
+    }
+  };
+
+  // Generate share text when component mounts
   useEffect(() => {
-    getShareText();
+    generateShareText();
   }, []);
 
   // Submit to form when we have the share text
@@ -48,6 +45,7 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
           setSubmitStatus(success ? 'success' : 'error');
           setTimeout(() => setSubmitStatus(''), 3000);
         } catch (error) {
+          console.error('Error submitting form:', error);
           setSubmitStatus('error');
           setTimeout(() => setSubmitStatus(''), 3000);
         }
@@ -69,26 +67,6 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
   const handlePlayAgain = () => {
     localStorage.removeItem('wordleState');
     window.location.reload();
-  };
-
-  const handleShareClick = async () => {
-    // Copy to clipboard
-    try {
-      await navigator.clipboard.writeText(shareText);
-    } catch (error) {
-      console.error('Failed to copy to clipboard:', error);
-      // Fallback for mobile browsers
-      const textarea = document.createElement('textarea');
-      textarea.value = shareText;
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand('copy');
-        textarea.remove();
-      } catch (err) {
-        console.error('Fallback clipboard copy failed:', err);
-      }
-    }
   };
 
   if (!isVisible) return null;
@@ -141,14 +119,7 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
           )}
         </div>
 
-        <div className="flex justify-center space-x-4">
-          <button
-            onClick={handleShareClick}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Share Results
-          </button>
-          
+        <div className="flex justify-center">
           <button
             onClick={handlePlayAgain}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
