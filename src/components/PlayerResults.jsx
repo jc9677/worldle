@@ -16,7 +16,29 @@ const PlayerResults = () => {
       document.head.appendChild(script);
     };
 
-    //https://docs.google.com/spreadsheets/d/1VRilOqbxSI_uHD_A_4f4wS4hbRFf7KzXBMGufCO2FzA/edit?usp=sharing
+    const isToday = (date) => {
+      const today = new Date();
+      return date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear();
+    };
+
+    const extractResultInfo = (resultString) => {
+      if (!resultString) return { guesses: null, boxes: null };
+      
+      // Extract number of guesses
+      const guessMatch = resultString.match(/(\d+)\/\d+/);
+      const guesses = guessMatch ? guessMatch[1] : null;
+      
+      // Extract colored boxes
+      const lines = resultString.split('\n');
+      const boxes = lines
+        .filter(line => line.match(/^[🟩⬛🟨]+$/))
+        .join('\n');
+      
+      return { guesses, boxes };
+    };
+
     const fetchResults = () => {
       const SHEET_ID = '1VRilOqbxSI_uHD_A_4f4wS4hbRFf7KzXBMGufCO2FzA';
       const query = new window.google.visualization.Query(
@@ -33,9 +55,6 @@ const PlayerResults = () => {
         const data = response.getDataTable();
         const rows = [];
         const columns = [];
-        console.log(data);
-        console.log("Number of columns: ", data.getNumberOfColumns());
-        console.log("Number of rows: ", data.getNumberOfRows());
 
         // Get column names
         for (let i = 0; i < data.getNumberOfColumns(); i++) {
@@ -51,18 +70,48 @@ const PlayerResults = () => {
           rows.push(row);
         }
 
-        // Group by player and get most recent
-        const playerMap = new Map();
-        rows.forEach(entry => {
-          //console.log(entry.Name);
-          //console.log(entry.Result);
-          const currentEntry = playerMap.get(entry.Player);
+        // Get all unique players
+        const uniquePlayers = [...new Set(rows.map(row => row.Name))];
+        
+        // Get today's results
+        const todayResults = rows.filter(entry => isToday(new Date(entry.Timestamp)));
+        
+        // Create map of most recent results for today
+        const todayPlayerMap = new Map();
+        todayResults.forEach(entry => {
+          const currentEntry = todayPlayerMap.get(entry.Name);
           if (!currentEntry || new Date(entry.Timestamp) > new Date(currentEntry.Timestamp)) {
-            playerMap.set(entry.Player, entry);
+            todayPlayerMap.set(entry.Name, entry);
           }
         });
 
-        setResults(Array.from(playerMap.values()));
+        // Create final results array with all players
+        const finalResults = uniquePlayers.map(player => {
+          const todayEntry = todayPlayerMap.get(player);
+          const resultInfo = todayEntry ? extractResultInfo(todayEntry.Result) : { guesses: null, boxes: null };
+          return {
+            name: player,
+            hasPlayedToday: !!todayEntry,
+            guesses: resultInfo.guesses,
+            boxes: resultInfo.boxes,
+            timestamp: todayEntry ? todayEntry.Timestamp : null
+          };
+        });
+
+        // Sort by number of guesses (ascending), with non-players at bottom
+        finalResults.sort((a, b) => {
+          // If neither has played, sort alphabetically
+          if (!a.hasPlayedToday && !b.hasPlayedToday) {
+            return a.name.localeCompare(b.name);
+          }
+          // If only one has played, put the one who hasn't played at the bottom
+          if (!a.hasPlayedToday) return 1;
+          if (!b.hasPlayedToday) return -1;
+          // If both have played, sort by number of guesses
+          return parseInt(a.guesses) - parseInt(b.guesses);
+        });
+
+        setResults(finalResults);
         setLoading(false);
       });
     };
@@ -88,17 +137,26 @@ const PlayerResults = () => {
 
   return (
     <div className="mt-8 bg-gray-800 rounded-lg border border-gray-700 p-4">
-      <h2 className="text-xl font-semibold mb-4 text-gray-200">Latest Results</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-200">Player Status</h2>
       <div className="space-y-2">
-        {results.map((result, index) => (
+        {results.map((result) => (
           <div 
-            key={`${result.Name}-${index}`}
-            className="flex justify-between items-center p-2 rounded bg-gray-700"
+            key={result.name}
+            className="p-2 rounded bg-gray-700"
           >
-            <span className="font-medium">{result.Name}</span>
-            <span className="text-sm">
-              {result.Result} guesses
-            </span>
+            <div className="flex justify-between items-center">
+              <span className="font-medium text-gray-200">{result.name}</span>
+              <span className="text-sm text-gray-300">
+                {result.hasPlayedToday 
+                  ? `${result.guesses} guesses`
+                  : "hasn't played yet today"}
+              </span>
+            </div>
+            {result.boxes && (
+              <div className="mt-1 font-mono text-sm whitespace-pre leading-tight">
+                {result.boxes}
+              </div>
+            )}
           </div>
         ))}
       </div>
