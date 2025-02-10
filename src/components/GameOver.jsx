@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { submitToForm } from '../utils/formSubmission';
 
 const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
   const [isVisible, setIsVisible] = useState(true);
+  const [submitStatus, setSubmitStatus] = useState('');
 
   useEffect(() => {
     const handleEsc = (event) => {
@@ -15,9 +17,46 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
   }, []);
 
   const handlePlayAgain = () => {
-    // Only clear the game state, keep the stats
     localStorage.removeItem('wordleState');
     window.location.reload();
+  };
+
+  const handleShareAndSubmit = async () => {
+    // Get the share text by temporarily replacing navigator.clipboard.writeText
+    let shareText = '';
+    const originalClipboard = navigator.clipboard.writeText;
+    navigator.clipboard.writeText = (text) => {
+      shareText = text;
+      return Promise.resolve();
+    };
+
+    // Call handleShare to get the text
+    handleShare();
+
+    // Restore original clipboard function
+    navigator.clipboard.writeText = originalClipboard;
+
+    // Now copy to actual clipboard
+    try {
+      await navigator.clipboard.writeText(shareText);
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+    }
+
+    // Submit to form if configured
+    if (localStorage.getItem('worldle_form_url')) {
+      setSubmitStatus('submitting');
+      try {
+        const success = await submitToForm(shareText);
+        setSubmitStatus(success ? 'success' : 'error');
+        
+        // Clear status after 3 seconds
+        setTimeout(() => setSubmitStatus(''), 3000);
+      } catch (error) {
+        setSubmitStatus('error');
+        setTimeout(() => setSubmitStatus(''), 3000);
+      }
+    }
   };
 
   if (!isVisible) return null;
@@ -56,11 +95,23 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
             <br />
             Max Streak: {stats.maxStreak}
           </p>
+          
+          {submitStatus && (
+            <p className={`mt-2 text-sm ${
+              submitStatus === 'success' ? 'text-green-400' : 
+              submitStatus === 'error' ? 'text-red-400' : 
+              'text-gray-400'
+            }`}>
+              {submitStatus === 'submitting' ? 'Submitting result...' :
+               submitStatus === 'success' ? 'Result submitted!' :
+               submitStatus === 'error' ? 'Failed to submit result' : ''}
+            </p>
+          )}
         </div>
 
         <div className="flex justify-center space-x-4">
           <button
-            onClick={handleShare}
+            onClick={handleShareAndSubmit}
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
             Share Results
