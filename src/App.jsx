@@ -4,6 +4,7 @@ import Keyboard from './components/Keyboard';
 import GameOver from './components/GameOver';
 import StatsButton from './components/StatsButton';
 import FormSettings from './components/FormSettings';
+import PlayerResults from './components/PlayerResults';
 import useGameState from './hooks/useGameState';
 import useStats from './hooks/useStats';
 import { handleShare } from './utils/gameLogic';
@@ -53,6 +54,8 @@ function App() {
           handleInput={handleInput} 
           letterStates={state.letterStates} 
         />
+
+        <PlayerResults />
 
         {state.gameOver && (
           <GameOver
