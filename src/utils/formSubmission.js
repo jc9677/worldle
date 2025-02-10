@@ -1,18 +1,28 @@
-export const submitToForm = async (result) => {
+export const submitToForm = async (result, state = {}, setState = () => {}) => {
+  // Default state object if none provided
+  const currentState = state || {};
+  
+  // If submission was already successful, don't submit again
+  if (currentState.submissionStatus === 'success') {
+    console.log('Result already successfully submitted, skipping...');
+    return true;
+  }
+
   console.log('Starting form submission...');
   const formUrl = localStorage.getItem('worldle_webhook_url');
   const playerName = localStorage.getItem('worldle_player_name');
   
   if (!formUrl || !playerName) {
     console.error('Form URL or player name not set', { formUrl, playerName });
+    setState({ ...currentState, submissionStatus: 'error' });
     return false;
   }
 
   // Extract form ID from the URL
-  //const formId = formUrl.match(/\/e\/([a-zA-Z0-9_-]+)/)?.[1];
-  const formId = formUrl.toString()
+  const formId = formUrl.toString();
   if (!formId) {
     console.error('Invalid form URL, could not extract form ID', { formUrl });
+    setState({ ...currentState, submissionStatus: 'error' });
     return false;
   }
 
@@ -40,6 +50,7 @@ export const submitToForm = async (result) => {
     });
     
     console.log('Direct POST completed', { response });
+    setState({ ...currentState, submissionStatus: 'success' });
     return true;
   } catch (error) {
     console.error('Error with direct POST:', error);
@@ -69,6 +80,9 @@ export const submitToForm = async (result) => {
       
       console.log('Fallback form submitted');
 
+      // Update submission status
+      setState({ ...currentState, submissionStatus: 'success' });
+
       // Clean up form after submission
       setTimeout(() => {
         if (document.body.contains(form)) {
@@ -80,6 +94,7 @@ export const submitToForm = async (result) => {
       return true;
     } catch (fallbackError) {
       console.error('Fallback submission failed:', fallbackError);
+      setState({ ...currentState, submissionStatus: 'error' });
       return false;
     }
   }

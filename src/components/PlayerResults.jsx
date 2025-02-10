@@ -54,8 +54,8 @@ const PlayerResults = () => {
         // Group by player and get most recent
         const playerMap = new Map();
         rows.forEach(entry => {
-          console.log(entry.Name);
-          console.log(entry.Result);
+          //console.log(entry.Name);
+          //console.log(entry.Result);
           const currentEntry = playerMap.get(entry.Player);
           if (!currentEntry || new Date(entry.Timestamp) > new Date(currentEntry.Timestamp)) {
             playerMap.set(entry.Player, entry);

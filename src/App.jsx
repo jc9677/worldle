@@ -22,15 +22,6 @@ function App() {
     }
   }, [state.gameOver, state.won]);
 
-  // const getTileClass = (row, col) => {
-  //   if (row >= state.currentRow) return '';
-    
-  //   const letter = state.board[row][col];
-  //   if (letter === state.targetWord[col]) return 'bg-green-600';
-  //   if (state.targetWord.includes(letter)) return 'bg-yellow-600';
-  //   return 'bg-gray-700';
-  // };
-
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="container mx-auto px-1 py-3 max-w-lg relative">
@@ -46,10 +37,9 @@ function App() {
           </button>
         </div>
         
-
         <Board 
           board={state.board} 
-          tileColors={state.tileColors}  // Pass tileColors instead of getTileClass
+          tileColors={state.tileColors}
         />
 
         <Keyboard 
@@ -66,6 +56,8 @@ function App() {
             handleShare={async (clipboard) => handleShare(state, clipboard)}
             stats={stats}
             currentRow={state.currentRow}
+            state={state}
+            setState={setState}
           />
         )}
 

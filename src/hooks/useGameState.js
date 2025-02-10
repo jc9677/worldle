@@ -15,6 +15,7 @@ const useGameState = () => {
           won: false,
           targetWord: getTodaysWord(),
           letterStates: {},
+          submissionStatus: null // Reset submission status for new word
         };
       }
       return parsed;
@@ -27,6 +28,7 @@ const useGameState = () => {
       won: false,
       targetWord: getTodaysWord(),
       letterStates: {},
+      submissionStatus: null // Initialize submission status
     };
   });
 
@@ -101,7 +103,6 @@ const useGameState = () => {
         }
   
         const { tileColors, newLetterStates } = processGuess(guess, state.targetWord);
-        //const { tileColors } = processGuess(guess, state.targetWord);
 
         console.log('tileColors:', tileColors);
         console.log('newLetterStates:', newLetterStates);
@@ -113,7 +114,8 @@ const useGameState = () => {
           letterStates: { ...state.letterStates, ...newLetterStates },
           tileColors: [...state.tileColors || [], tileColors],
           gameOver: guess === state.targetWord || state.currentRow === 5,
-          won: guess === state.targetWord
+          won: guess === state.targetWord,
+          submissionStatus: null // Reset submission status when game ends
         });
       }
     } else if (key === 'BACKSPACE') {
@@ -137,45 +139,9 @@ const useGameState = () => {
     }
   };
 
-  // const getTileClass = (row, col) => {
-  //   if (row >= state.currentRow) return '';
-    
-  //   const guess = state.board[row];
-  //   const targetWord = state.targetWord;
-    
-  //   // First pass: mark exact matches
-  //   const colors = Array(5).fill('bg-gray-700');
-  //   const letterCounts = {};
-    
-  //   // Initialize letter counts from target word
-  //   for (const letter of targetWord) {
-  //     letterCounts[letter] = (letterCounts[letter] || 0) + 1;
-  //   }
-  
-  //   // First check exact matches and decrement counts
-  //   for (let i = 0; i < 5; i++) {
-  //     if (guess[i] === targetWord[i]) {
-  //       colors[i] = 'bg-green-600';
-  //       letterCounts[guess[i]]--;
-  //     }
-  //   }
-  
-  //   // Then check remaining letters for yellows
-  //   for (let i = 0; i < 5; i++) {
-  //     if (colors[i] !== 'bg-green-600') {
-  //       const letter = guess[i];
-  //       if (letterCounts[letter] > 0) {
-  //         colors[i] = 'bg-yellow-600';
-  //         letterCounts[letter]--;
-  //       }
-  //     }
-  //   }
-  
-  //   return colors[col];
-  // };
-
   return {
     state,
+    setState, // Export setState to allow updating submission status
     handleInput
   };
 };

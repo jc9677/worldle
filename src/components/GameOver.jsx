@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { submitToForm } from '../utils/formSubmission';
 
-const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
+const GameOver = ({ won, targetWord, handleShare, stats, currentRow, state, setState }) => {
   const [shareText, setShareText] = useState('');
   const [isVisible, setIsVisible] = useState(true);
   const [submitStatus, setSubmitStatus] = useState('');
@@ -31,25 +31,29 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
   useEffect(() => {
     if (!shareText) return;
 
+    // Check if we've already submitted successfully
+    if (state?.submissionStatus === 'success') {
+      console.log('Already submitted successfully, skipping...');
+      setSubmitStatus('success');
+      return;
+    }
+
     const submitResult = async () => {
       const webhookUrl = localStorage.getItem('worldle_webhook_url');
       if (!webhookUrl) return;
 
       setSubmitStatus('submitting');
       try {
-        const success = await submitToForm(shareText);
+        const success = await submitToForm(shareText, state, setState);
         setSubmitStatus(success ? 'success' : 'error');
       } catch (error) {
         console.error('Error submitting form:', error);
         setSubmitStatus('error');
       }
-      
-      // Clear status after delay
-      setTimeout(() => setSubmitStatus(''), 3000);
     };
 
     submitResult();
-  }, [shareText]);
+  }, [shareText, state?.submissionStatus]);
 
   // Handle ESC key
   useEffect(() => {
@@ -66,6 +70,8 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
     localStorage.removeItem('wordleState');
     window.location.reload();
   };
+
+  const isSubmitting = submitStatus === 'submitting';
 
   if (!isVisible) return null;
 
@@ -117,14 +123,19 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
           )}
         </div>
 
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <button
             onClick={handlePlayAgain}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            disabled={isSubmitting}
+            className={`font-bold py-2 px-4 rounded ${
+              isSubmitting 
+                ? 'bg-gray-500 cursor-not-allowed opacity-50' 
+                : 'bg-blue-600 hover:bg-blue-700'
+            } text-white`}
           >
-            Play Again
+            {isSubmitting ? 'Submitting...' : 'Play Again'}
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
