@@ -8,6 +8,8 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
   const [submitStatus, setSubmitStatus] = useState('');
   const [hasGenerated, setHasGenerated] = useState(false);
 
+  console.log('GameOver component rendered');
+
   // Function to directly get share text without using clipboard
   const generateShareText = async () => {
     if (hasGenerated) return; // Prevent multiple generations
