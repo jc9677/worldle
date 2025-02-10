@@ -6,61 +6,52 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
   const [shareText, setShareText] = useState('');
   const [isVisible, setIsVisible] = useState(true);
   const [submitStatus, setSubmitStatus] = useState('');
-  const [hasGenerated, setHasGenerated] = useState(false);
 
-  console.log('GameOver component rendered');
-
-  // Function to directly get share text without using clipboard
-  const generateShareText = async () => {
-    if (hasGenerated) return; // Prevent multiple generations
-    
-    try {
-      // Call handleShare with a mock function that captures the text
-      const mockWriteText = (text) => {
-        setShareText(text);
-        return Promise.resolve();
-      };
-      
-      const mockClipboard = { writeText: mockWriteText };
-      await handleShare(mockClipboard);
-      setHasGenerated(true);
-    } catch (error) {
-      console.error('Error generating share text:', error);
-      // Set a default share text in case of error
-      setShareText(`${won ? `Won in ${currentRow}` : 'Lost'}`);
-      setHasGenerated(true);
-    }
-  };
-
-  console.log('generateShareText should now be called');
-
-  // Generate share text when component mounts
+  // Generate share text once when component mounts
   useEffect(() => {
-    generateShareText();
-  }, []);
-
-  console.log('It should have been called now');
-  console.log('Share text:', shareText);
-
-  // Submit to form when we have the share text
-  useEffect(() => {
-    const autoSubmit = async () => {
-      if (shareText && localStorage.getItem('worldle_form_url')) {
-        setSubmitStatus('submitting');
-        try {
-          const success = await submitToForm(shareText);
-          setSubmitStatus(success ? 'success' : 'error');
-          setTimeout(() => setSubmitStatus(''), 3000);
-        } catch (error) {
-          console.error('Error submitting form:', error);
-          setSubmitStatus('error');
-          setTimeout(() => setSubmitStatus(''), 3000);
-        }
+    const generateShareText = async () => {
+      try {
+        const mockClipboard = {
+          writeText: (text) => {
+            setShareText(text);
+            return Promise.resolve();
+          }
+        };
+        await handleShare(mockClipboard);
+      } catch (error) {
+        console.error('Error generating share text:', error);
+        setShareText(`${won ? `Won in ${currentRow}` : 'Lost'}`);
       }
     };
-    autoSubmit();
+
+    generateShareText();
+  }, [won, currentRow, handleShare]);
+
+  // Handle form submission when shareText is available
+  useEffect(() => {
+    if (!shareText) return;
+
+    const submitResult = async () => {
+      const webhookUrl = localStorage.getItem('worldle_webhook_url');
+      if (!webhookUrl) return;
+
+      setSubmitStatus('submitting');
+      try {
+        const success = await submitToForm(shareText);
+        setSubmitStatus(success ? 'success' : 'error');
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        setSubmitStatus('error');
+      }
+      
+      // Clear status after delay
+      setTimeout(() => setSubmitStatus(''), 3000);
+    };
+
+    submitResult();
   }, [shareText]);
 
+  // Handle ESC key
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.key === 'Escape') {

@@ -1,6 +1,6 @@
 export const submitToForm = async (result) => {
   console.log('Starting form submission...');
-  const formUrl = localStorage.getItem('worldle_form_url');
+  const formUrl = localStorage.getItem('worldle_webhook_url');
   const playerName = localStorage.getItem('worldle_player_name');
   
   if (!formUrl || !playerName) {
@@ -9,7 +9,8 @@ export const submitToForm = async (result) => {
   }
 
   // Extract form ID from the URL
-  const formId = formUrl.match(/\/e\/([a-zA-Z0-9_-]+)/)?.[1];
+  //const formId = formUrl.match(/\/e\/([a-zA-Z0-9_-]+)/)?.[1];
+  const formId = formUrl.toString()
   if (!formId) {
     console.error('Invalid form URL, could not extract form ID', { formUrl });
     return false;
