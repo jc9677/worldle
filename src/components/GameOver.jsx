@@ -32,10 +32,15 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
     }
   };
 
+  console.log('generateShareText should now be called');
+
   // Generate share text when component mounts
   useEffect(() => {
     generateShareText();
   }, []);
+
+  console.log('It should have been called now');
+  console.log('Share text:', shareText);
 
   // Submit to form when we have the share text
   useEffect(() => {
