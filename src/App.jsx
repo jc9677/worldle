@@ -15,12 +15,17 @@ function App() {
   const { state, setState, handleInput } = useGameState();
   const { stats, updateStats } = useStats();
   const [showSettings, setShowSettings] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     if (state.gameOver) {
       updateStats(state.won);
     }
   }, [state.gameOver, state.won]);
+
+  const handleFormSubmitted = () => {
+    setRefreshTrigger(prev => prev + 1); // Increment to trigger refresh
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -47,7 +52,7 @@ function App() {
           letterStates={state.letterStates} 
         />
 
-        <PlayerResults />
+        <PlayerResults refreshTrigger={refreshTrigger} />
 
         {state.gameOver && (
           <GameOver
@@ -58,6 +63,7 @@ function App() {
             currentRow={state.currentRow}
             state={state}
             setState={setState}
+            onFormSubmitted={handleFormSubmitted}
           />
         )}
 

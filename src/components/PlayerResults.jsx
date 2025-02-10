@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const PlayerResults = () => {
+const PlayerResults = ({ refreshTrigger }) => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,7 +33,7 @@ const PlayerResults = () => {
       // Extract colored boxes
       const lines = resultString.split('\n');
       const boxes = lines
-        .filter(line => line.match(/^[🟩⬛🟨]+$/))
+        .filter(line => line.match(/^[⬛🟨🟩]+$/))
         .join('\n');
       
       return { guesses, boxes };
@@ -117,7 +117,7 @@ const PlayerResults = () => {
     };
 
     loadGoogleSheets();
-  }, []);
+  }, [refreshTrigger]); // Re-run effect when refreshTrigger changes
 
   if (loading) {
     return (

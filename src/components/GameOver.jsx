@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { submitToForm } from '../utils/formSubmission';
 
-const GameOver = ({ won, targetWord, handleShare, stats, currentRow, state, setState }) => {
+const GameOver = ({ 
+  won, 
+  targetWord, 
+  handleShare, 
+  stats, 
+  currentRow, 
+  state, 
+  setState,
+  onFormSubmitted 
+}) => {
   const [shareText, setShareText] = useState('');
   const [isVisible, setIsVisible] = useState(true);
   const [submitStatus, setSubmitStatus] = useState('');
@@ -46,6 +55,9 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow, state, setS
       try {
         const success = await submitToForm(shareText, state, setState);
         setSubmitStatus(success ? 'success' : 'error');
+        if (success && onFormSubmitted) {
+          onFormSubmitted(); // Trigger refresh of PlayerResults
+        }
       } catch (error) {
         console.error('Error submitting form:', error);
         setSubmitStatus('error');
@@ -53,7 +65,7 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow, state, setS
     };
 
     submitResult();
-  }, [shareText, state?.submissionStatus]);
+  }, [shareText, state?.submissionStatus, onFormSubmitted]);
 
   // Handle ESC key
   useEffect(() => {
@@ -65,13 +77,6 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow, state, setS
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
-
-  const handlePlayAgain = () => {
-    localStorage.removeItem('wordleState');
-    window.location.reload();
-  };
-
-  const isSubmitting = submitStatus === 'submitting';
 
   if (!isVisible) return null;
 
