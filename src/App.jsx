@@ -22,14 +22,14 @@ function App() {
     }
   }, [state.gameOver, state.won]);
 
-  const getTileClass = (row, col) => {
-    if (row >= state.currentRow) return '';
+  // const getTileClass = (row, col) => {
+  //   if (row >= state.currentRow) return '';
     
-    const letter = state.board[row][col];
-    if (letter === state.targetWord[col]) return 'bg-green-600';
-    if (state.targetWord.includes(letter)) return 'bg-yellow-600';
-    return 'bg-gray-700';
-  };
+  //   const letter = state.board[row][col];
+  //   if (letter === state.targetWord[col]) return 'bg-green-600';
+  //   if (state.targetWord.includes(letter)) return 'bg-yellow-600';
+  //   return 'bg-gray-700';
+  // };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -46,9 +46,10 @@ function App() {
           </button>
         </div>
         
+
         <Board 
           board={state.board} 
-          getTileClass={getTileClass} 
+          tileColors={state.tileColors}  // Pass tileColors instead of getTileClass
         />
 
         <Keyboard 

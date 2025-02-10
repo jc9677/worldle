@@ -1,6 +1,11 @@
 import React from 'react';
 
-const Board = ({ board, getTileClass }) => {
+const Board = ({ board, tileColors }) => {
+  const getTileClass = (row, col) => {
+    if (!tileColors || row >= tileColors.length) return '';
+    return tileColors[row][col];
+  };
+
   return (
     <div className="grid grid-rows-6 gap-2 mb-14 mx-auto">
       {board.map((row, i) => (
@@ -8,13 +13,7 @@ const Board = ({ board, getTileClass }) => {
           {row.map((letter, j) => (
             <div 
               key={j} 
-              className={`
-                w-14 h-14
-                border-2 border-gray-600 
-                flex items-center justify-center
-                text-2xl font-bold uppercase
-                ${getTileClass(i, j)}
-              `}
+              className={`w-14 h-14 border-2 border-gray-600 flex items-center justify-center text-2xl font-bold uppercase ${getTileClass(i, j)}`}
             >
               {letter || '\u00A0'}
             </div>

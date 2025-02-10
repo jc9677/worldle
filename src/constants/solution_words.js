@@ -904,7 +904,7 @@ export const SOLUTION_WORDS = [
   "event",
   "ensue",
   "shunt",
-  "diver",
+  "short",
   "poser",
   "worst",
   "sweep",

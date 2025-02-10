@@ -48,47 +48,72 @@ const useGameState = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [state]);
 
+  const processGuess = (guess, targetWord) => {
+    const colors = Array(5).fill('bg-gray-700');
+    const letterCounts = {};
+    const newLetterStates = {};
+    
+    // Count target word letters
+    for (const letter of targetWord) {
+      letterCounts[letter] = (letterCounts[letter] || 0) + 1;
+    }
+  
+    // Mark greens first
+    for (let i = 0; i < 5; i++) {
+      if (guess[i] === targetWord[i]) {
+        colors[i] = 'bg-green-600';
+        letterCounts[guess[i]]--;
+      }
+    }
+  
+    // Then yellows, only if letters remain
+    for (let i = 0; i < 5; i++) {
+      if (colors[i] === 'bg-gray-700' && letterCounts[guess[i]] > 0) {
+        colors[i] = 'bg-yellow-600';
+        letterCounts[guess[i]]--;
+      }
+    }
+    // Update letter states based on final colors
+    for (let i = 0; i < 5; i++) {
+      const letter = guess[i];
+      const color = colors[i];
+      if (!newLetterStates[letter] || 
+          (color === 'bg-green-600') || 
+          (color === 'bg-yellow-600' && newLetterStates[letter] !== 'bg-green-600')) {
+        newLetterStates[letter] = color;
+      }
+    }
+
+    console.log('Colors:', colors);
+    return { tileColors: colors, newLetterStates };
+  };
+
   const handleInput = async (key) => {
     if (state.gameOver) return;
-
+  
     if (key === 'ENTER') {
+      console.log('Enter pressed');
       if (state.currentCol === 5) {
         const guess = state.board[state.currentRow].join('');
-        const isValid = await isValidGuess(guess);
-        
-        if (!isValid) {
+        if (!await isValidGuess(guess)) {
           alert('Not in word list!');
           return;
         }
+  
+        const { tileColors, newLetterStates } = processGuess(guess, state.targetWord);
+        //const { tileColors } = processGuess(guess, state.targetWord);
 
-        const newLetterStates = { ...state.letterStates };
-        const targetWord = state.targetWord;
-
-        for (let i = 0; i < 5; i++) {
-          const letter = guess[i];
-          if (letter === targetWord[i]) {
-            newLetterStates[letter] = 'bg-green-600';
-          } else if (targetWord.includes(letter)) {
-            if (newLetterStates[letter] !== 'bg-green-600') {
-              newLetterStates[letter] = 'bg-yellow-600';
-            }
-          } else {
-            if (!targetWord.includes(letter) && !newLetterStates[letter]) {
-              newLetterStates[letter] = 'bg-gray-700';
-            }
-          }
-        }
-
-        const won = guess === targetWord;
-        const gameOver = won || state.currentRow === 5;
-
+        console.log('tileColors:', tileColors);
+        console.log('newLetterStates:', newLetterStates);
+        
         setState({
           ...state,
           currentRow: state.currentRow + 1,
           currentCol: 0,
-          letterStates: newLetterStates,
-          gameOver,
-          won,
+          letterStates: { ...state.letterStates, ...newLetterStates },
+          tileColors: [...state.tileColors || [], tileColors],
+          gameOver: guess === state.targetWord || state.currentRow === 5,
+          won: guess === state.targetWord
         });
       }
     } else if (key === 'BACKSPACE') {
@@ -112,20 +137,46 @@ const useGameState = () => {
     }
   };
 
-  const getTileClass = (row, col) => {
-    const baseClass = 'tile';
-    if (row >= state.currentRow) return baseClass;
-
-    const letter = state.board[row][col];
-    if (letter === state.targetWord[col]) return `${baseClass} correct`;
-    if (state.targetWord.includes(letter)) return `${baseClass} present`;
-    return `${baseClass} absent`;
-  };
+  // const getTileClass = (row, col) => {
+  //   if (row >= state.currentRow) return '';
+    
+  //   const guess = state.board[row];
+  //   const targetWord = state.targetWord;
+    
+  //   // First pass: mark exact matches
+  //   const colors = Array(5).fill('bg-gray-700');
+  //   const letterCounts = {};
+    
+  //   // Initialize letter counts from target word
+  //   for (const letter of targetWord) {
+  //     letterCounts[letter] = (letterCounts[letter] || 0) + 1;
+  //   }
+  
+  //   // First check exact matches and decrement counts
+  //   for (let i = 0; i < 5; i++) {
+  //     if (guess[i] === targetWord[i]) {
+  //       colors[i] = 'bg-green-600';
+  //       letterCounts[guess[i]]--;
+  //     }
+  //   }
+  
+  //   // Then check remaining letters for yellows
+  //   for (let i = 0; i < 5; i++) {
+  //     if (colors[i] !== 'bg-green-600') {
+  //       const letter = guess[i];
+  //       if (letterCounts[letter] > 0) {
+  //         colors[i] = 'bg-yellow-600';
+  //         letterCounts[letter]--;
+  //       }
+  //     }
+  //   }
+  
+  //   return colors[col];
+  // };
 
   return {
     state,
-    handleInput,
-    getTileClass,
+    handleInput
   };
 };
 
