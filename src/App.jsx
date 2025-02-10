@@ -72,7 +72,7 @@ function App() {
           onClose={() => setShowSettings(false)}
         />
 
-        <DebugLog />
+        {/* <DebugLog /> */}
       </div>
     </div>
   );
