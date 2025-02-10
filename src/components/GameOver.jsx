@@ -3,8 +3,58 @@ import { X } from 'lucide-react';
 import { submitToForm } from '../utils/formSubmission';
 
 const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
+  // State to store the share text
+  const [shareText, setShareText] = useState('');
+
+  // Function to get share text without copying to clipboard
+  const getShareText = () => {
+    // Create a mock clipboard function
+    const mockClipboard = (text) => {
+      setShareText(text);
+      return Promise.resolve();
+    };
+
+    // If navigator.clipboard is available, temporarily replace it
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      const originalClipboard = navigator.clipboard.writeText;
+      navigator.clipboard.writeText = mockClipboard;
+      handleShare();
+      navigator.clipboard.writeText = originalClipboard;
+    } else {
+      // If clipboard API is not available, just call handleShare with mock
+      const originalClipboard = window.navigator.clipboard;
+      window.navigator.clipboard = { writeText: mockClipboard };
+      handleShare();
+      window.navigator.clipboard = originalClipboard;
+    }
+
+    return shareText;
+  };
   const [isVisible, setIsVisible] = useState(true);
   const [submitStatus, setSubmitStatus] = useState('');
+
+  // Get share text and submit to form when component mounts
+  useEffect(() => {
+    getShareText();
+  }, []);
+
+  // Submit to form when we have the share text
+  useEffect(() => {
+    const autoSubmit = async () => {
+      if (shareText && localStorage.getItem('worldle_form_url')) {
+        setSubmitStatus('submitting');
+        try {
+          const success = await submitToForm(shareText);
+          setSubmitStatus(success ? 'success' : 'error');
+          setTimeout(() => setSubmitStatus(''), 3000);
+        } catch (error) {
+          setSubmitStatus('error');
+          setTimeout(() => setSubmitStatus(''), 3000);
+        }
+      }
+    };
+    autoSubmit();
+  }, [shareText]);
 
   useEffect(() => {
     const handleEsc = (event) => {
@@ -21,40 +71,22 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
     window.location.reload();
   };
 
-  const handleShareAndSubmit = async () => {
-    // Get the share text by temporarily replacing navigator.clipboard.writeText
-    let shareText = '';
-    const originalClipboard = navigator.clipboard.writeText;
-    navigator.clipboard.writeText = (text) => {
-      shareText = text;
-      return Promise.resolve();
-    };
-
-    // Call handleShare to get the text
-    handleShare();
-
-    // Restore original clipboard function
-    navigator.clipboard.writeText = originalClipboard;
-
-    // Now copy to actual clipboard
+  const handleShareClick = async () => {
+    // Copy to clipboard
     try {
       await navigator.clipboard.writeText(shareText);
     } catch (error) {
       console.error('Failed to copy to clipboard:', error);
-    }
-
-    // Submit to form if configured
-    if (localStorage.getItem('worldle_form_url')) {
-      setSubmitStatus('submitting');
+      // Fallback for mobile browsers
+      const textarea = document.createElement('textarea');
+      textarea.value = shareText;
+      document.body.appendChild(textarea);
+      textarea.select();
       try {
-        const success = await submitToForm(shareText);
-        setSubmitStatus(success ? 'success' : 'error');
-        
-        // Clear status after 3 seconds
-        setTimeout(() => setSubmitStatus(''), 3000);
-      } catch (error) {
-        setSubmitStatus('error');
-        setTimeout(() => setSubmitStatus(''), 3000);
+        document.execCommand('copy');
+        textarea.remove();
+      } catch (err) {
+        console.error('Fallback clipboard copy failed:', err);
       }
     }
   };
@@ -111,7 +143,7 @@ const GameOver = ({ won, targetWord, handleShare, stats, currentRow }) => {
 
         <div className="flex justify-center space-x-4">
           <button
-            onClick={handleShareAndSubmit}
+            onClick={handleShareClick}
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
             Share Results
