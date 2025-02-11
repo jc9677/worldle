@@ -16,7 +16,8 @@ const useGameState = () => {
           won: false,
           targetWord: getTodaysWord(),
           letterStates: {},
-          submissionStatus: null // Reset submission status for new word
+          submissionStatus: null, // Reset submission status for new word
+          isAdditionalGame: false // Initialize flag for main game
         };
       }
       return parsed;
@@ -29,7 +30,8 @@ const useGameState = () => {
       won: false,
       targetWord: getTodaysWord(),
       letterStates: {},
-      submissionStatus: null // Initialize submission status
+      submissionStatus: null, // Initialize submission status
+      isAdditionalGame: false // Initialize flag for main game
     };
   });
 
@@ -140,7 +142,7 @@ const useGameState = () => {
     }
   };
 
-  const resetGameState = (randomWord) => {
+  const resetGameState = (randomWord, isAdditionalGame = false) => {
     setState({
       board: Array(6).fill().map(() => Array(5).fill('')),
       currentRow: 0,
@@ -149,7 +151,8 @@ const useGameState = () => {
       won: false,
       targetWord: randomWord,
       letterStates: {},
-      submissionStatus: null
+      submissionStatus: null,
+      isAdditionalGame: isAdditionalGame // Set the flag based on the parameter
     });
   };
 

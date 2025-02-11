@@ -65,8 +65,10 @@ const GameOver = ({
       }
     };
 
-    submitResult();
-  }, [shareText, state?.submissionStatus, onFormSubmitted]);
+    if (!state.isAdditionalGame) {
+      submitResult();
+    }
+  }, [shareText, state?.submissionStatus, onFormSubmitted, state.isAdditionalGame]);
 
   // Handle ESC key
   useEffect(() => {
