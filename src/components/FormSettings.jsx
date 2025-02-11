@@ -3,21 +3,42 @@ import { X } from 'lucide-react';
 
 const FormSettings = ({ isOpen, onClose }) => {
   const [webhookUrl, setWebhookUrl] = useState('');
+  const [sheetId, setSheetId] = useState('');
   const [playerName, setPlayerName] = useState('');
+  const SEPARATOR = 'L4x,9hjH';
   
   useEffect(() => {
     const savedWebhookUrl = localStorage.getItem('worldle_webhook_url');
     const savedPlayerName = localStorage.getItem('worldle_player_name');
+    const savedSheetId = localStorage.getItem('worldle_sheet_id');
     
     if (savedWebhookUrl) setWebhookUrl(savedWebhookUrl);
     if (savedPlayerName) setPlayerName(savedPlayerName);
+    if (savedSheetId) setSheetId(savedSheetId);
   }, []);
   
+  const handleAccessCodeChange = (e) => {
+    const fullCode = e.target.value;
+    if (fullCode.includes(SEPARATOR)) {
+      const [webhookPart, sheetPart] = fullCode.split(SEPARATOR);
+      setWebhookUrl(webhookPart);
+      setSheetId(sheetPart);
+    } else {
+      // If no separator found, store everything in webhookUrl
+      setWebhookUrl(fullCode);
+      setSheetId('');
+    }
+  };
+
   const saveSettings = () => {
     localStorage.setItem('worldle_webhook_url', webhookUrl);
     localStorage.setItem('worldle_player_name', playerName);
+    localStorage.setItem('worldle_sheet_id', sheetId);
     onClose();
   };
+
+  // Combine webhook and sheet ID for display in input
+  const displayAccessCode = sheetId ? `${webhookUrl}${SEPARATOR}${sheetId}` : webhookUrl;
 
   if (!isOpen) return null;
 
@@ -54,10 +75,10 @@ const FormSettings = ({ isOpen, onClose }) => {
           <div>
             <label className="block text-sm font-medium mb-1">Access code</label>
             <input
-              type="url"
+              type="text"
               className="w-full p-2 rounded bg-gray-700 border border-gray-600"
-              value={webhookUrl}
-              onChange={(e) => setWebhookUrl(e.target.value)}
+              value={displayAccessCode}
+              onChange={handleAccessCodeChange}
               placeholder="<big long weird code goes here>"
             />
             <p className="text-xs text-gray-400 mt-1">

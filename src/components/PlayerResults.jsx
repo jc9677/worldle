@@ -40,7 +40,8 @@ const PlayerResults = ({ refreshTrigger }) => {
     };
 
     const fetchResults = () => {
-      const SHEET_ID = '1VRilOqbxSI_uHD_A_4f4wS4hbRFf7KzXBMGufCO2FzA';
+      //const SHEET_ID = '';
+      const SHEET_ID = localStorage.getItem('worldle_sheet_id');
       const query = new window.google.visualization.Query(
         `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tq=SELECT *`
       );
