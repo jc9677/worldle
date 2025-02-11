@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getTodaysWord, isValidGuess } from '../utils/gameLogic';
+import { SOLUTION_WORDS } from '../constants/solution_words';
 
 const useGameState = () => {
   const [state, setState] = useState(() => {
@@ -15,7 +16,8 @@ const useGameState = () => {
           won: false,
           targetWord: getTodaysWord(),
           letterStates: {},
-          submissionStatus: null // Reset submission status for new word
+          submissionStatus: null, // Reset submission status for new word
+          isAdditionalGame: false // Initialize flag for main game
         };
       }
       return parsed;
@@ -28,7 +30,8 @@ const useGameState = () => {
       won: false,
       targetWord: getTodaysWord(),
       letterStates: {},
-      submissionStatus: null // Initialize submission status
+      submissionStatus: null, // Initialize submission status
+      isAdditionalGame: false // Initialize flag for main game
     };
   });
 
@@ -139,10 +142,31 @@ const useGameState = () => {
     }
   };
 
+  const resetGameState = (randomWord, isAdditionalGame = false) => {
+    setState({
+      board: Array(6).fill().map(() => Array(5).fill('')),
+      currentRow: 0,
+      currentCol: 0,
+      gameOver: false,
+      won: false,
+      targetWord: randomWord,
+      letterStates: {},
+      submissionStatus: null,
+      isAdditionalGame: isAdditionalGame // Set the flag based on the parameter
+    });
+  };
+
+  const getRandomWord = () => {
+    const randomIndex = Math.floor(Math.random() * SOLUTION_WORDS.length);
+    return SOLUTION_WORDS[randomIndex];
+  };
+
   return {
     state,
     setState, // Export setState to allow updating submission status
-    handleInput
+    handleInput,
+    resetGameState,
+    getRandomWord
   };
 };
 

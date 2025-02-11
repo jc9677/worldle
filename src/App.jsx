@@ -8,11 +8,11 @@ import PlayerResults from './components/PlayerResults';
 import DebugLog from './components/DebugLog';
 import useGameState from './hooks/useGameState';
 import useStats from './hooks/useStats';
-import { handleShare } from './utils/gameLogic';
-import { Settings } from 'lucide-react';
+import { handleShare, getRandomWord } from './utils/gameLogic';
+import { Settings } from 'lucide-react'; // P5ff9
 
 function App() {
-  const { state, setState, handleInput } = useGameState();
+  const { state, setState, handleInput, resetGameState } = useGameState();
   const { stats, updateStats } = useStats();
   const [showSettings, setShowSettings] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -25,6 +25,11 @@ function App() {
 
   const handleFormSubmitted = () => {
     setRefreshTrigger(prev => prev + 1); // Increment to trigger refresh
+  };
+
+  const handlePlayAgain = () => {
+    const randomWord = getRandomWord();
+    resetGameState(randomWord, true);
   };
 
   return (
@@ -64,6 +69,7 @@ function App() {
             state={state}
             setState={setState}
             onFormSubmitted={handleFormSubmitted}
+            onPlayAgain={handlePlayAgain}
           />
         )}
 
