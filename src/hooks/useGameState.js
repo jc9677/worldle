@@ -59,6 +59,10 @@ const useGameState = () => {
     const todaysWord = getTodaysWord();
     if (todaysWord !== previousTodaysWord) {
       setPreviousTodaysWord(todaysWord);
+      setState((prevState) => ({
+        ...prevState,
+        isAdditionalGame: false
+      }));
     }
   }, [previousTodaysWord]);
 
