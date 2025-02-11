@@ -29,7 +29,7 @@ function App() {
 
   const handlePlayAgain = () => {
     const randomWord = getRandomWord();
-    resetGameState(randomWord);
+    resetGameState(randomWord, true);
   };
 
   return (
