@@ -70,3 +70,8 @@ export const handleShare = (state, customClipboard = navigator.clipboard) => {
 
   return customClipboard.writeText(result);
 };
+
+export const getRandomWord = () => {
+  const randomIndex = Math.floor(Math.random() * SOLUTION_WORDS.length);
+  return SOLUTION_WORDS[randomIndex];
+};

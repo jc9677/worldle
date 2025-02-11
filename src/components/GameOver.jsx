@@ -10,7 +10,8 @@ const GameOver = ({
   currentRow, 
   state, 
   setState,
-  onFormSubmitted 
+  onFormSubmitted,
+  onPlayAgain // P4cba
 }) => {
   const [shareText, setShareText] = useState('');
   const [isVisible, setIsVisible] = useState(true);
@@ -128,19 +129,14 @@ const GameOver = ({
           )}
         </div>
 
-        {/* <div className="flex justify-center">
+        <div className="flex justify-center">
           <button
-            onClick={handlePlayAgain}
-            disabled={isSubmitting}
-            className={`font-bold py-2 px-4 rounded ${
-              isSubmitting 
-                ? 'bg-gray-500 cursor-not-allowed opacity-50' 
-                : 'bg-blue-600 hover:bg-blue-700'
-            } text-white`}
+            onClick={onPlayAgain}
+            className="font-bold py-2 px-4 rounded bg-blue-600 hover:bg-blue-700 text-white"
           >
-            {isSubmitting ? 'Submitting...' : 'Play Again'}
+            Play Again
           </button>
-        </div> */}
+        </div>
       </div>
     </div>
   );
