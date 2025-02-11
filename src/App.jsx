@@ -9,6 +9,7 @@ import DebugLog from './components/DebugLog';
 import useGameState from './hooks/useGameState';
 import useStats from './hooks/useStats';
 import { handleShare, getRandomWord } from './utils/gameLogic';
+import { Settings } from 'lucide-react'; // P5ff9
 
 function App() {
   const { state, setState, handleInput, resetGameState } = useGameState();
