@@ -1,3 +1,12 @@
 export const WORDS = [
-  'REACT', 'BUILD', 'CODES', 'WORLD', 'GAMES', 'RAISE', 'GREAT'
+  "pencil",
+  "guitar",
+  "orange",
+  "butter",
+  "mirror",
+  "garden",
+  "single",
+  "window",
+  "coffee",
+  "dinner"
 ];

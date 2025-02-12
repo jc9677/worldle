@@ -11,7 +11,7 @@ const GameOver = ({
   state, 
   setState,
   onFormSubmitted,
-  onPlayAgain // P4cba
+  onPlayAgain
 }) => {
   const [shareText, setShareText] = useState('');
   const [isVisible, setIsVisible] = useState(true);
