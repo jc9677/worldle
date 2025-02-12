@@ -158,7 +158,7 @@ const useGameState = () => {
   const resetGameState = (randomWord, isAdditionalGame = false) => {
     const todaysWord = getTodaysWord();
     const shouldResetAdditionalGame = todaysWord !== previousTodaysWord;
-
+  
     setState({
       board: Array(6).fill().map(() => Array(5).fill('')),
       currentRow: 0,
@@ -168,9 +168,9 @@ const useGameState = () => {
       targetWord: randomWord,
       letterStates: {},
       submissionStatus: null,
-      isAdditionalGame: shouldResetAdditionalGame ? isAdditionalGame : state.isAdditionalGame
+      isAdditionalGame: isAdditionalGame  // Always use the passed value
     });
-
+  
     if (shouldResetAdditionalGame) {
       setPreviousTodaysWord(todaysWord);
     }
