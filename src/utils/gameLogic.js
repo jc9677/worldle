@@ -4,7 +4,7 @@ import { SOLUTION_WORDS } from '../constants/solution_words';
 async function loadValidGuesses() {
   try {
     console.log('Loading valid guesses...');
-    const response = await fetch('/worldle/5-letter-words.csv');
+    const response = await fetch('/worldle/6-letter-words.csv');
     const text = await response.text();
     // Split by newlines and filter out empty strings
     const words = text.split('\n')
@@ -55,7 +55,7 @@ export const handleShare = (state, customClipboard = navigator.clipboard) => {
   let result = `Wordle Clone ${state.won ? state.currentRow : 'X'}/6\n\n`;
   for (let i = 0; i < state.currentRow; i++) {
     const row = state.board[i];
-    for (let j = 0; j < 5; j++) {
+    for (let j = 0; j < 6; j++) {
       const letter = row[j];
       if (letter === state.targetWord[j]) {
         result += '🟩';

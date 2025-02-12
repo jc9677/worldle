@@ -9,7 +9,7 @@ const useGameState = () => {
       const parsed = JSON.parse(saved);
       if (parsed.targetWord !== getTodaysWord()) {
         return {
-          board: Array(6).fill().map(() => Array(5).fill('')),
+          board: Array(6).fill().map(() => Array(6).fill('')),
           currentRow: 0,
           currentCol: 0,
           gameOver: false,
@@ -23,7 +23,7 @@ const useGameState = () => {
       return parsed;
     }
     return {
-      board: Array(6).fill().map(() => Array(5).fill('')),
+      board: Array(6).fill().map(() => Array(6).fill('')),
       currentRow: 0,
       currentCol: 0,
       gameOver: false,
@@ -67,7 +67,7 @@ const useGameState = () => {
   }, [previousTodaysWord]);
 
   const processGuess = (guess, targetWord) => {
-    const colors = Array(5).fill('bg-gray-700');
+    const colors = Array(6).fill('bg-gray-700');
     const letterCounts = {};
     const newLetterStates = {};
     
@@ -77,7 +77,7 @@ const useGameState = () => {
     }
   
     // Mark greens first
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       if (guess[i] === targetWord[i]) {
         colors[i] = 'bg-green-600';
         letterCounts[guess[i]]--;
@@ -85,14 +85,14 @@ const useGameState = () => {
     }
   
     // Then yellows, only if letters remain
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       if (colors[i] === 'bg-gray-700' && letterCounts[guess[i]] > 0) {
         colors[i] = 'bg-yellow-600';
         letterCounts[guess[i]]--;
       }
     }
     // Update letter states based on final colors
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       const letter = guess[i];
       const color = colors[i];
       if (!newLetterStates[letter] || 
@@ -111,7 +111,7 @@ const useGameState = () => {
   
     if (key === 'ENTER') {
       console.log('Enter pressed');
-      if (state.currentCol === 5) {
+      if (state.currentCol === 6) {
         const guess = state.board[state.currentRow].join('');
         if (!await isValidGuess(guess)) {
           alert('Not in word list!');
@@ -144,7 +144,7 @@ const useGameState = () => {
           currentCol: state.currentCol - 1,
         });
       }
-    } else if (state.currentCol < 5) {
+    } else if (state.currentCol < 6) {
       const newBoard = [...state.board];
       newBoard[state.currentRow][state.currentCol] = key;
       setState({
@@ -160,7 +160,7 @@ const useGameState = () => {
     const shouldResetAdditionalGame = todaysWord !== previousTodaysWord;
   
     setState({
-      board: Array(6).fill().map(() => Array(5).fill('')),
+      board: Array(6).fill().map(() => Array(6).fill('')),
       currentRow: 0,
       currentCol: 0,
       gameOver: false,
