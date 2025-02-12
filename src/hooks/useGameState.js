@@ -35,6 +35,8 @@ const useGameState = () => {
     };
   });
 
+  const [previousTodaysWord, setPreviousTodaysWord] = useState(getTodaysWord());
+
   useEffect(() => {
     localStorage.setItem('wordleState', JSON.stringify(state));
   }, [state]);
@@ -52,6 +54,17 @@ const useGameState = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [state]);
+
+  useEffect(() => {
+    const todaysWord = getTodaysWord();
+    if (todaysWord !== previousTodaysWord) {
+      setPreviousTodaysWord(todaysWord);
+      setState((prevState) => ({
+        ...prevState,
+        isAdditionalGame: false
+      }));
+    }
+  }, [previousTodaysWord]);
 
   const processGuess = (guess, targetWord) => {
     const colors = Array(5).fill('bg-gray-700');
@@ -143,6 +156,9 @@ const useGameState = () => {
   };
 
   const resetGameState = (randomWord, isAdditionalGame = false) => {
+    const todaysWord = getTodaysWord();
+    const shouldResetAdditionalGame = todaysWord !== previousTodaysWord;
+  
     setState({
       board: Array(6).fill().map(() => Array(5).fill('')),
       currentRow: 0,
@@ -152,8 +168,12 @@ const useGameState = () => {
       targetWord: randomWord,
       letterStates: {},
       submissionStatus: null,
-      isAdditionalGame: isAdditionalGame // Set the flag based on the parameter
+      isAdditionalGame: isAdditionalGame  // Always use the passed value
     });
+  
+    if (shouldResetAdditionalGame) {
+      setPreviousTodaysWord(todaysWord);
+    }
   };
 
   const getRandomWord = () => {
